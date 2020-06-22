@@ -1,0 +1,2 @@
+# GDC
+Graph DropConnect
