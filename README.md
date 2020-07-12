@@ -1,9 +1,7 @@
 Beta-Bernoulli Graph DropConnect (BB-GDC)
 ============
 
-This is a PyTorch implementation of the BB-GDC as described in our paper:
-
-A. Hasanzadeh*, E. Hajiramezanali*, S. Boluki, M. Zhou, N. Duffield, K. R. Narayanan, and X. Qian, [Bayesian Graph Neural Networks with Adaptive Connection Sampling](https://arxiv.org/abs/2006.04064), International Conference on Machine Learning (ICML), 2020, *equal contribution
+This is a PyTorch implementation of the BB-GDC as described in our paper [Bayesian Graph Neural Networks with Adaptive Connection Sampling](https://arxiv.org/abs/2006.04064) appeared at 37-th International Conference on Machine Learning (ICML 2020).
 
 
 <img src="gcn.png" width="600">
