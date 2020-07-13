@@ -16,7 +16,7 @@ import torch
 import math
 import torch.nn.functional as F
 import time
-from model import BBDGCN
+from model import BBGDCGCN
 from utils import load_data, accuracy_mrun_np, normalize_torch
 
 
@@ -51,11 +51,11 @@ mul_type='norm_first'
 
 # defining model
 
-model = BBDGCN(nfeat_list=nfeat_list
-               , dropout=dropout
-               , nblock=nblock
-               , nlay=nlay
-               , num_edges=num_edges)
+model = BBGDCGCN(nfeat_list=nfeat_list
+                 , dropout=dropout
+                 , nblock=nblock
+                 , nlay=nlay
+                 , num_edges=num_edges)
 
 optimizer = torch.optim.Adam(model.parameters(), lr=lr)
 
