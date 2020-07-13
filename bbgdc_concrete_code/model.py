@@ -63,9 +63,9 @@ class GraphConvolution(nn.Module):
 
 
 
-class BBDropedge(nn.Module):
+class BBGDC(nn.Module):
     def __init__(self, num_pars, alpha=0.8, kl_scale=1.0):
-        super(BBDropedge, self).__init__()
+        super(BBGDC, self).__init__()
         self.num_pars = num_pars
         self.alpha = alpha
         self.kl_scale = kl_scale
@@ -114,31 +114,31 @@ class BBDropedge(nn.Module):
 
 
 
-class BBDGCN(nn.Module):
+class BBGDCGCN(nn.Module):
     def __init__(self, nfeat_list, dropout, nblock, nlay, num_edges):
-        super(BBDGCN, self).__init__()
+        super(BBGDCGCN, self).__init__()
         
         assert len(nfeat_list)==nlay+1
         self.nlay = nlay
         self.nblock = nblock
         self.num_edges = num_edges
         self.num_nodes = int(np.sqrt(num_edges))
-        self.drpedg_list = []
+        self.drpcon_list = []
         self.dropout = dropout
         gcs_list = []
         idx = 0
         for i in range(nlay):
             if i==0:
-                self.drpedg_list.append(BBDropedge(1))
+                self.drpcon_list.append(BBGDC(1))
                 gcs_list.append([str(idx), GraphConvolution(nfeat_list[i], nfeat_list[i+1])])
                 idx += 1
             else:
-                self.drpedg_list.append(BBDropedge(1))
+                self.drpcon_list.append(BBGDC(1))
                 for j in range(self.nblock):
                     gcs_list.append([str(idx), GraphConvolution(int(nfeat_list[i]/self.nblock), nfeat_list[i+1])])
                     idx += 1
         
-        self.drpedgs = nn.ModuleList(self.drpedg_list)
+        self.drpcons = nn.ModuleList(self.drpcon_list)
         self.gcs = nn.ModuleDict(gcs_list)
         self.nfeat_list = nfeat_list
     
@@ -148,7 +148,7 @@ class BBDGCN(nn.Module):
         kld_loss = 0.0
         drop_rates = []
         for i in range(self.nlay):
-            mask_vec, drop_prob = self.drpedgs[i].get_weight(self.nblock*self.num_edges, training, samp_type)
+            mask_vec, drop_prob = self.drpcons[i].get_weight(self.nblock*self.num_edges, training, samp_type)
             mask_vec = torch.squeeze(mask_vec)
             drop_rates.append(drop_prob)
             if i==0:
@@ -189,7 +189,7 @@ class BBDGCN(nn.Module):
                     x = F.dropout(F.relu(x), self.dropout, training=training)
             
             
-            kld_loss += self.drpedgs[i].get_reg()
+            kld_loss += self.drpcons[i].get_reg()
             
         
         output = F.log_softmax(out, dim=1)
